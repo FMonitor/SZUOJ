@@ -1,0 +1,9 @@
+80000001 constructed.
+80000002 constructed.
+80000003 constructed.
+wrong number.
+Phone=80000003--Type=C--State=use--Owner=mary
+Phone=80000002--Type=B--State=unuse--Owner=ken
+80000003 destructed.
+80000002 destructed.
+80000001 destructed.

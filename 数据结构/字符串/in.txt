@@ -1,0 +1,9 @@
+2
+aabbcc
+3
+aa
+bb
+cc
+ababab
+1
+aba
