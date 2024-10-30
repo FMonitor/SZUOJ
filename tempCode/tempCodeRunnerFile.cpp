@@ -3,8 +3,12 @@ using namespace std;
 
 struct Node {
     char data;
-    Node *lchild, *rchild;
+    int id;
+    int fa;
+    Node* lchild, * rchild;
 };
+
+queue<Node*> que;
 
 void buildPreOrder(Node*& root, string& data, int& index) {
     if (index >= data.size()) {
@@ -15,6 +19,7 @@ void buildPreOrder(Node*& root, string& data, int& index) {
     } else {
         root = new Node;
         root->data = data[index];
+        root->id = index;
         // cout << root->data << " build left " << index << endl;
         buildPreOrder(root->lchild, data, ++index);
         // cout << root->data << " build right " << index << endl;
@@ -22,40 +27,41 @@ void buildPreOrder(Node*& root, string& data, int& index) {
     }
 }
 
-void preOrder(Node* &root) {
+void lvlOrder(Node* &root,int fa) {
     if (root == NULL) {
         return;
     }
-    cout << root->data;
-    preOrder(root->lchild);
-    preOrder(root->rchild);
+    cout << root->data << " ";
+    // cout << root->lchild->data << " " << root->rchild->data << endl;
+    int tmp = fa;
+    cout << root->lchild << endl;
+    if (root->lchild != NULL) {
+        cout << "?";
+        root->lchild->fa = fa + 1;
+        root->lchild->id = tmp++;
+        que.push(root->lchild);
+    }
+    if (root->rchild != NULL) {
+        root->rchild->fa = fa + 1;
+        root->rchild->id = tmp++;
+
+        que.push(root->rchild);
+    }
+    cout << que.size();
+    que.pop();
+    lvlOrder(que.front(), que.front()->id);
+    
 }
 
-void inOrder(Node* &root) {
-    if (root == NULL) {
-        return;
-    }
-    inOrder(root->lchild);
-    cout << root->data;
-    inOrder(root->rchild);
-}
 
-void postOrder(Node* &root) {
-    if (root == NULL) {
-        return;
-    }
-    postOrder(root->lchild);
-    postOrder(root->rchild);
-    cout << root->data;
-}
 
-void destroy(Node* &root) {
-    if (root == NULL) {
-        return;
-    }
-    destroy(root->lchild);
-    destroy(root->rchild);
-    delete root;
+void destroy(Node*& root) {
+        if (root == NULL) {
+            return;
+        }
+        destroy(root->lchild);
+        destroy(root->rchild);
+        delete root;
 }
 
 int main() {
@@ -71,13 +77,12 @@ int main() {
         Node* root;
         int index = 0;
         buildPreOrder(root, data, index);
-        preOrder(root);
-        cout << endl;
-        inOrder(root);
-        cout << endl;
-        postOrder(root);
-        cout << endl;
+        que.push(root);
+        lvlOrder(root, -1);
         destroy(root);
+        cout << endl;
     }
+
+    
     return 0;
 }
