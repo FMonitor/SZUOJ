@@ -1,5 +1,20 @@
 #include<bits/stdc++.h>
 using namespace std;
+
+struct ListNode {
+    int index; 
+    ListNode* next;
+    ListNode(int idx) : index(idx), next(nullptr) {}
+};
+
+struct Vertex {
+    char info;
+    ListNode* next;
+    Vertex(int id) : info(id), next(nullptr) {}
+    Vertex() : next(nullptr) {}
+};
+
+
 int main() {
 #ifndef ONLINE_JUDGE
     freopen("in.txt", "r", stdin);
@@ -10,24 +25,30 @@ int main() {
     while (t--) {
         int n, k;
         cin >> n >> k;
-        vector<int> v[n];
-        map<int, char> m;
-        map<char, int> m2;
+        Vertex* vertex = new Vertex[n];
+        map<char, int> mp;
         for (int i = 0; i < n; i++) {
-            char tmp;
-            cin >> tmp;
-            m[i] = tmp;
-            m2[tmp] = i;
+            char ch;
+            cin >> ch;
+            mp[ch] = i;
+            vertex[i].info = ch;
         }
-        while (k--) {
-            char node1, node2;
-            cin >> node1 >> node2;
-            v[m2[node1]].push_back(m2[node2]);
+        for (int i = 0; i < k; i++) {
+            char a, b;
+            cin >> a >> b;
+            int x = mp[a], y = mp[b];
+            ListNode* node = new ListNode(y);
+            ListNode* p = vertex[x].next;
+            while (p && p->next) p = p->next;
+            if (!p) vertex[x].next = node;
+            else p->next = node;
         }
         for (int i = 0; i < n; i++) {
-            cout << i << " " << m[i] << "-";
-            for (int j = 0; j < v[i].size(); j++) {
-                cout << v[i][j] << "-";
+            cout << i << " " << vertex[i].info << "-";
+            ListNode* node = vertex[i].next;
+            while (node) {
+                cout << mp[vertex[node->index].info] << "-";
+                node = node->next;
             }
             cout << "^" << endl;
         }
