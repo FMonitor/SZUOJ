@@ -16,9 +16,13 @@ void print() {
     cout << "------" << endl;
 }
 
-int dfs(int x, int y, int &cnt) {
+int dfs(int x, int y, int& cnt, bool& flag) {
     if (square[x][y] == 1) {
         return cnt;
+    }
+    if (x == 1 || x == m || y == 1 || y == n) {
+        // cout << x << " " << y << endl;
+        flag = 1;
     }
     // print();
     // system("pause");
@@ -31,15 +35,16 @@ int dfs(int x, int y, int &cnt) {
         if (tmpx == 0 || tmpy == 0 || tmpx == m + 1 || tmpy == n + 1) {
             continue;
         }
-        dfs(tmpx, tmpy, cnt);
+        dfs(tmpx, tmpy, cnt, flag);
     }
+    // cout << x << " " << y << " " << flag << endl;
     return cnt;
 }
 
 int main() {
 #ifndef ONLINE_JUDGE
-    freopen("in.txt","r",stdin);
-    freopen("out.txt","w",stdout);
+    freopen("in.txt", "r", stdin);
+    freopen("out.txt", "w", stdout);
 #endif
     int t;
     cin >> t;
@@ -53,11 +58,15 @@ int main() {
         int tmp = 0;
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (square[i][j] == 0 && (i == 1 || i == m || j == 1 || j == n)) {
-                    dfs(i, j, tmp);
-                    tmp = 0;
+                int res = 0;
+                bool flag = 0;
+                if (square[i][j] == 0) {
+                    res = dfs(i, j, tmp, flag);
+                    tmp -= res;
                 }
-                else maxn = max(maxn, dfs(i, j, tmp));
+                if (flag == 0)
+                    maxn += res;
+                
             }
         }
         cout << maxn << endl;
