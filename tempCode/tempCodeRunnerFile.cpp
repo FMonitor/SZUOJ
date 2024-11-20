@@ -1,67 +1,86 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
+#define INF 0x3f3f3f3f
 
-bool square[100][100];
-int m, n, maxn;
+int n, matrix[501][501];
+string vertex[501], point;
+int dist[501][501];
+int nextNode[501][501];
 
-int dir[4][2] = { {0,1},{0,-1},{1,0},{-1,0} };
-
-void print() {
-    for (int i = 1;i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
-            cout << square[i][j] << " ";
+void floydWarshall() {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            dist[i][j] = matrix[i][j];
+            if (matrix[i][j] != INF && i != j) {
+                nextNode[i][j] = j;
+            } else {
+                nextNode[i][j] = -1;
+            }
         }
-        cout << endl;
     }
-    cout << "------" << endl;
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dist[i][k] < INF && dist[k][j] < INF && dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                    nextNode[i][j] = nextNode[i][k];
+                }
+            }
+        }
+    }
 }
 
-int dfs(int x, int y, int &cnt) {
-    if (square[x][y] == 1) {
-        return cnt;
+vector<int> getPath(int u, int v) {
+    if (nextNode[u][v] == -1) return {};
+    vector<int> path = {u};
+    while (u != v) {
+        u = nextNode[u][v];
+        path.push_back(u);
     }
-    // print();
-    // system("pause");
-    cnt++;
-    // cout << x <<" "<< y <<" "<<cnt << endl;
-    square[x][y] = 1;
-    for (int i = 0; i < 4; i++) {
-        int tmpx = x + dir[i][0];
-        int tmpy = y + dir[i][1];
-        if (tmpx == 0 || tmpy == 0 || tmpx == m + 1 || tmpy == n + 1) {
-            continue;
-        }
-        dfs(tmpx, tmpy, cnt);
-    }
-    return cnt;
+    return path;
 }
 
 int main() {
 #ifndef ONLINE_JUDGE
-    freopen("in.txt","r",stdin);
-    freopen("out.txt","w",stdout);
+    freopen("in.txt", "r", stdin);
+    freopen("out.txt", "w", stdout);
 #endif
     int t;
     cin >> t;
     while (t--) {
-        cin >> m >> n;
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                cin >> square[i][j];
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cin >> vertex[i];
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> matrix[i][j];
+                if (matrix[i][j] == 0 && i != j) matrix[i][j] = INF;
             }
         }
-        int tmp = 0;
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (square[i][j] == 0 && (i == 1 || i == m || j == 1 || j == n)) {
-                    dfs(i, j, tmp);
-                    tmp = 0;
-                }
-                else maxn = max(maxn, dfs(i, j, tmp));
+        cin >> point;
+        int m;
+        for (int i = 0; i < n; i++) {
+            if (vertex[i] == point) {
+                m = i;
+                break;
             }
         }
-        cout << maxn << endl;
-        maxn = 0;
+        floydWarshall();
+        for (int i = 0; i < n; i++) {
+            if (i == m) continue;
+            if(dist[m][i] == INF) {
+                cout << vertex[m] << "-" << vertex[i] <<"--"<<1 << "\n";
+                continue;
+            }
+            vector<int> path = getPath(m, i);
+            cout << vertex[m] << "-" << vertex[i] << "-" << dist[m][i] << "----[";
+            for (int k = 0; k < path.size(); k++) {
+                cout << vertex[path[k]] << " ";
+            }
+            cout << "]\n";
+        }
     }
-
+    return 0;
 }
