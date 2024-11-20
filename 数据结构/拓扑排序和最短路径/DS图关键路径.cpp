@@ -38,7 +38,7 @@ public:
 public:
     void readVertexes() {
         //TODO: 将顶点数读入成员变量n
-        
+        cin >> n;
         //TODO： 从输入初始化vertexes数组
         int i=0;
         for(; i<n; ++i) {
@@ -52,8 +52,10 @@ public:
             int j=0;
             for(; j<n; ++j) {
                 //TODO： 将0增加到row最后
+                row.push_back(0);
             }
-           //TODO： 将row增加到adjMat最后
+            //TODO： 将row增加到adjMat最后
+            this->adjMat.push_back(row);
         }
     }
     void readAdjMatrix() {
@@ -64,6 +66,8 @@ public:
         int s, t, w;  //s源顶点编号，t目的顶点编号，w边长
         for(; i<edges; ++i) {
             //TODO: 读入s,t,w，并将adjMat的第s行、第t列的值改为w.
+            cin >> s >> t >> w;
+            this->adjMat[s][t] = w;
         }
     }
 
@@ -86,6 +90,21 @@ public:
     }
     void updateLater(int childNo, queue<int>& laterQue) {
         //TODO:
+        int childLater = vertexes[childNo].later;  //读入子结点later值
+        // cout <<"[INFO] childNo: " << childNo << " childLater: " << childLater << endl;
+        int j = 0;
+        for(; j<n; ++j) {
+            int edgeValue = adjMat[j][childNo];
+            if (edgeValue == 0) continue;  //若子结点与结点j没有边相连，pass
+
+            Vertex& parent = vertexes[j];
+            parent.updateLater(childLater, edgeValue); //更新父结点j的later信息
+            // cout << "[INFO] parent: " << j << " parent.later: " << parent.later << endl;
+            if(!parent.hasEnterQueue) {
+                parent.hasEnterQueue = true; //将父结点加入队列
+                laterQue.push(j);
+            }
+        }
     }
 
     int getRoot() {
@@ -100,6 +119,13 @@ public:
     }
     int getLeaf() {
         //TODO： 获取出度为0的顶点
+        int j = 0;
+        for(; j<n; ++j) {
+            int i = 0;
+            for(; i<n && adjMat[j][i] == 0; ++i);
+            if (i>=n) return j; //j has not any out-edges.
+        }
+        return -1;  //表示没找到
     }
 
     void printEarlyLater(bool isEarly) {
@@ -143,6 +169,24 @@ public:
     void findLater() {
         //TODO：调用clearEnterQueue，以清除每个顶点的hasEnterQueue=false
         //执行关键路径算法，求每个顶点的最迟开始时间。
+        clearEnterQueue();
+        int l = getLeaf();
+        Vertex& leaf = vertexes[l];
+        leaf.hasEnterQueue = true;
+        leaf.later = leaf.early;
+        // cout << "[INFO] leaf: " << l << " leaf.later: " << leaf.later << endl;
+
+        queue<int> que;
+        que.push(l);
+
+        while(!que.empty()) {
+            int c = que.front();
+            que.pop();
+
+            updateLater(c, que);
+        }
+
+        printEarlyLater(false);
     }
 
     void main() {
@@ -155,7 +199,11 @@ public:
 
 
 int main() {
-    int t=1;
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("out.txt", "w", stdout);
+#endif
+    int t = 1;
     //cin >> t;
     while (t--) {
         Graph g;
