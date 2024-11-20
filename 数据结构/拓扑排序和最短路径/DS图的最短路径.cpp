@@ -1,74 +1,101 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#define Maxn 0x3f3f3f3f
 using namespace std;
-#define i_n for(int i = 1; i <= n; i++)
-#define j_n for(int j = 1; j <= n; j++)
-#define k_n for(int k = 1; k <= n; k++)
-#define INF 0x3f3f3f3f
+class Graph {
+private:
+    int vernum;
+    string* vertex;
+    int** matrix;
+public:
+    Graph() {
+    }
+    Graph(int _vernum, string* _vertex, int** mat) {
+        vernum = _vernum;
+        vertex = new string[vernum];
+        for (int i = 0;i < vernum;i++)
+            vertex[i] = _vertex[i];
+        matrix = new int* [vernum];
+        for (int i = 0;i < vernum;i++)
+            matrix[i] = new int[vernum];
+        for (int i = 0;i < vernum;i++)
+            for (int j = 0;j < vernum;j++)
+                matrix[i][j] = mat[i][j];
+        for (int i = 0;i < vernum;i++)
+            for (int j = 0;j < vernum;j++) {
+                if (matrix[i][j] == 0)
+                    matrix[i][j] = Maxn;
+            }
 
-int n, matrix[501][501];
-string vertex[501];
-vector<int> path;
-vector<int> dis;
-
-int main() {
-#ifndef ONLINE_JUDGE
-    freopen("in.txt", "r", stdin);
-    freopen("out.txt", "w", stdout);
-#endif
-    int t;
-    cin >> t;
-    while (t--) {
-        cin >> n;
-        i_n{
-            j_n{
-                matrix[i][j] = (i == j ? 0 : INF);
+    }
+    int findindex(string str) {
+        for (int i = 0;i < vernum;i++)
+            if (vertex[i] == str)
+                return i;
+        return 0;
+    }
+    void dijkstra(string beginning) {
+        int i, j, current, minx;
+        bool* final = new bool[vernum];
+        int* minpath = new int[vernum];
+        int index = findindex(beginning);
+        string* path = new string[vernum];
+        for (i = 0;i < vernum;i++) {
+            path[i] = beginning + " ";
+            minpath[i] = matrix[index][i];
+            final[i] = false;
+        }
+        minpath[index] = 0;
+        final[index] = true;
+        for (i = 0;i < vernum;i++) {
+            minx = Maxn;
+            current = -1;
+            for (j = 0;j < vernum;j++) {
+                if (final[j] == false && minpath[j] < minx) {
+                    current = j;
+                    minx = minpath[j];
+                }
             }
-        }
-        i_n{
-            cin >> vertex[i];
-        }
-        i_n {
-            j_n {
-                cin >> matrix[i][j];
-            }
-        }
-        string s;
-        cin >> s;
-        int m;
-        i_n{
-            if (vertex[i] == s) {
-                m = i;
-                break;
-            }
-        }
-        i_n{
-            j_n {
-                if (matrix[m][i] < matrix[m][j] + matrix[j][i]) {
-                    matrix[m][i] = matrix[m][j] + matrix[j][i];
-                    path.push_back(j);
-                    path.push_back(i);
-                    dis.push_back(matrix[m][j] + dis[dis.size() - 1]);
-                    dis.push_back(matrix[j][i] + dis[dis.size() - 1]);
-                } else {
-                    path.push_back(i);
-                    dis.push_back(matrix[m][i] + dis[dis.size() - 1]);
+            if (current != -1) {
+                final[current] = true;
+                path[current] += vertex[current] + " ";
+                for (int k = 0;k < vernum;k++) {
+                    if (final[k] == false && minx + matrix[current][k] < minpath[k]) {
+                        minpath[k] = minx + matrix[current][k];
+                        path[k] = path[current];
+                    }
                 }
             }
         }
-        i_n {
-            j_n{
-                cout << matrix[i][j] << " ";
+        for (i = 0;i < vernum;i++) {
+            if (vertex[i] != beginning) {
+                cout << beginning << "-" << vertex[i];
+                if (minpath[i] >= Maxn) {
+                    cout << "--1" << endl;
+                    continue;
+                }
+                cout << "-" << minpath[i] << "----[" << path[i] << "]" << endl;
             }
-            cout << endl;
         }
-        for (int i = 0; i < dis.size(); i++) {
-            cout << dis[i] << "-";
-        }
-        cout << "---[";
-        for (int i = 0; i < path.size(); i++) {
-            cout << vertex[path[i]] << " ";
-        }
-        cout << "]\n";
+    }
+};
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        string* vertex = new string[n];
+        for (int i = 0;i < n;i++)
+            cin >> vertex[i];
+        int** matrix = new int* [n];
+        for (int i = 0;i < n;i++)
+            matrix[i] = new int[n];
+        for (int i = 0;i < n;i++)
+            for (int j = 0;j < n;j++)
+                cin >> matrix[i][j];
+        string beginning;
+        cin >> beginning;
+        Graph g(n, vertex, matrix);
+        g.dijkstra(beginning);
     }
 }
-
