@@ -1,25 +1,3 @@
-[INFO]Now:0 Next:2 Len:2 W:20
-[INFO]Dis:2 Cost:20
-[INFO]Now:0 Next:3 Len:4 W:10
-[INFO]Dis:4 Cost:10
-[INFO]Now:0 Next:1 Len:1 W:20
-[INFO]Dis:1 Cost:20
-[INFO]Dis:0 1 2 4 
-[INFO]Now:1 Next:3 Len:2 W:30
-[INFO]Dis:3 Cost:50
-[INFO]Now:1 Next:0 Len:1 W:20
-[INFO]Dis:0 Cost:0
-[INFO]Dis:0 1 2 3 
-[INFO]Now:2 Next:3 Len:1 W:20
-[INFO]Dis:3 Cost:40
-[INFO]Now:2 Next:0 Len:2 W:20
-[INFO]Dis:0 Cost:0
-[INFO]Dis:0 1 2 3 
-[INFO]Now:3 Next:2 Len:1 W:20
-[INFO]Dis:2 Cost:20
-[INFO]Now:3 Next:0 Len:4 W:10
-[INFO]Dis:0 Cost:0
-[INFO]Now:3 Next:1 Len:2 W:30
-[INFO]Dis:1 Cost:20
-[INFO]Dis:0 1 2 3 
-3 40
+22 11 33 55 44 66 77 
+22 11 33 55 44 50 66 77 
+22 11 10 33 55 44 50 66 77 

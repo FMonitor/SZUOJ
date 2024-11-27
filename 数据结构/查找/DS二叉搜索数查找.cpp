@@ -23,11 +23,26 @@ Node* insert(Node* root, int x) {
     return root;
 }
 
-void preOrder(Node* root) {
+int search(Node* root, int target, int times) {
+    if (root == NULL) {
+        return -1;
+    }
+    if (root->data == target) {
+        return times + 1;
+    }
+    if (root->data < target) {
+        return search(root->rchild, target, times + 1);
+    }
+    if (root->data > target) {
+        return search(root->lchild, target, times + 1);
+    }
+}
+
+void levelOrder(Node* root) {
     if (root == NULL) return;
+    levelOrder(root->lchild);
     cout << root->data << " ";
-    preOrder(root->lchild);
-    preOrder(root->rchild);
+    levelOrder(root->rchild);
 }
 
 int main() {
@@ -46,12 +61,13 @@ int main() {
     }
     int t;
     cin >> t;
+    levelOrder(root);
+    cout << endl;
     while (t--) {
-        int tmp;
-        cin >> tmp;
-        root=insert(root, tmp);
-        preOrder(root);
-        cout << endl;
+        int target;
+        cin >> target;
+        int res = search(root, target, 0);
+        cout << res << endl;
     }
     return 0;
 }

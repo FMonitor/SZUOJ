@@ -46,6 +46,8 @@ int main() {
     }
     int t;
     cin >> t;
+    preOrder(root);
+    cout << endl;
     while (t--) {
         int tmp;
         cin >> tmp;
