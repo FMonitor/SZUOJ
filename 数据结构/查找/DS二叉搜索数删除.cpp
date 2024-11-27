@@ -53,22 +53,28 @@ Node* findClosest(Node* root) {
     return root;
 }
 
-void delNode(Node* root, int target) {
-    root = search(root, target);
+void delNode(Node*& root, int target) {
     if (root == NULL) return;
-    if (root->lchild == NULL) {
-        Node* tmp = root->rchild;
-        delete root;
-        root = tmp;
-    } else if (root->rchild == NULL) {
-        Node* tmp = root->lchild;
-        delete root;
-        root = tmp;
+    if (target > root->data) {
+        delNode(root->rchild, target);
+    } else if (target < root->data) {
+        delNode(root->lchild, target);
     } else {
-        Node* closet = findClosest(root);
-        root->data = closet->data;
-        delNode(root->rchild, closet->data);
+        if (root->lchild == NULL) {
+            Node* tmp = root->rchild;
+            delete root;
+            root = tmp;
+        } else if (root->rchild == NULL) {
+            Node* tmp = root->lchild;
+            delete root;
+            root = tmp;
+        } else {
+            Node* closet = findClosest(root->rchild);
+            root->data = closet->data;
+            delNode(root->rchild, closet->data);
+        }
     }
+
 }
 
 int main() {
