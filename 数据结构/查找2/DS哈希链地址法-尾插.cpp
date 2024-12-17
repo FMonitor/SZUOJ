@@ -14,31 +14,43 @@ struct Node {
     }
 };
 struct head {
-    Node* nxt=NULL;
+    Node* nxt = NULL;
 }hashSet[12];
 
 void Hash(int key) {
     int mol = key % 11;
+    if (hashSet[mol].nxt == NULL) {
+        hashSet[mol].nxt = new Node(key);
+        return;
+    } 
+    Node* head = hashSet[mol].nxt;
+    while (head->nxt != NULL) {
+        head = head->nxt;
+    }
+
     Node* tmp = new Node(key);
-    tmp->nxt = hashSet->nxt;
-    hashSet->nxt = tmp;
+    head->nxt = tmp;
 }
 
 void search(int key) {
     int cnt = 1;
     int mol = key % 11;
-    cout << mol << endl;
+    // cout << key << endl;
     Node* tmp = hashSet[mol].nxt;
-    while (tmp->key != key) {
-        if (tmp == NULL) {
-            cout << "error" << endl;
-            Hash(key);
-            return;
-        }
+    while (tmp != NULL && tmp->key != key) {
+        // cout << mol << " " << tmp->key << " " << key;
+
         cnt++;
         tmp = tmp->nxt;
     }
-    cout << mol << ' ' << cnt << endl;
+    if (tmp == NULL) {
+        cout << "error" << endl;
+        Hash(key);
+        return;
+    }if (tmp->key == key) {
+        cout << mol << ' ' << cnt << endl;
+        return;
+    }
 }
 
 int main() {
