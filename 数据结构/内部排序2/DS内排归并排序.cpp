@@ -21,7 +21,6 @@ void merge(string str[], int l, int mid, int r) {
     for (int i = l;i <= r; i++) {
         str[i] = nStr[k++];
     }
-
 }
 
 void mergeSort(string str[]) {
